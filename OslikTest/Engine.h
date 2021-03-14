@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameObjects.h"
 #include "Levels.h"
+#include <iostream>
 
 using namespace sf;
 

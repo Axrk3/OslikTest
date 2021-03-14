@@ -1,5 +1,4 @@
 #include "Engine.h"
-#include <iostream>
 
 
 Engine::Engine() {
@@ -18,6 +17,7 @@ Engine::Engine() {
 	rect.setSize(rectSize);
 	
 	lvl.changeLevel(map1);
+
 }
 
 void Engine::input() {
@@ -82,7 +82,7 @@ void Engine::drawMap(String map[]) {
 
 	for (int i = 0; i < 34; i++) {
 		for (int j = 0; j < 80; j++) {
-			if (map[i][j] == 'B') rect.setFillColor(Color::Black);
+			if (map[i][j] == 'B') rect.setTexture(&lvl.dirt);
 			else {
 				continue;
 			}
