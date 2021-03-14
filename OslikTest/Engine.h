@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameObjects.h"
+#include "Levels.h"
 
 using namespace sf;
 
@@ -11,11 +12,12 @@ private:
 	Texture backgroundTexture;
 
 	void input();
-	void update(float dtAsSeconds);
+	void update(float time);
 	void draw();
-	void drawMap();
+	void drawMap(String map[]);
+	void collision(int dir);
 	Player player;
-	Level lvl1;
+	Level lvl;
 	RectangleShape rect;
 	Vector2f rectSize;
 public:

@@ -3,14 +3,8 @@
 
 using namespace sf;
 
-class Level {
-public:
-	String* map;
-	//Массивы с предметами и НПС
-};
-
 class GameObject {
-protected:
+public:
 	Vector2f position;
 	FloatRect rect;
 	Texture texture;
@@ -18,6 +12,8 @@ protected:
 public:
 	String name;
 	Sprite getSprite();
+	void setRect(int id, int value);
+	FloatRect getRect();
 };
 
 class Character : public GameObject {
@@ -45,27 +41,15 @@ class Enemy : public Character {
 };
 
 class Player : public Character {
-protected:
+public:
 	int ground;
-	bool onGround;
-	bool leftPressed;
-	bool rightPressed;
-	bool leftRun;
-	bool rightRun;
 	bool jump;
-	float speed;
-	float dx, dy;
 	Friend friends[5];
 public:
 	Player();
-	void moveLeft();
-	void runLeft();
-	void moveRight();
-	void runRight();
+	float dx, dy;
+	bool onGround;
 	void Jump();
-	void stopLeft();
-	void stopRight();
-	void update(float time);
 };
 
 class Item : public GameObject {
