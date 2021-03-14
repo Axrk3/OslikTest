@@ -74,7 +74,17 @@ void Engine::collision(int dir) {
 					player.setRect(1, i * blockSize + blockSize);
 					player.dy = 0;
 				}
-			} 
+			}
+			
+			if ((lvl.getMap()[i][j] == 'C' || lvl.getMap()[i][j] == 'T') && (Keyboard::isKeyPressed(Keyboard::E))) {
+				if (lvl.getMap()[i][j] == 'C') {
+					lvl.changeBlock(i, j);
+					lvl.changeBlock(i, j + 1);
+				} else {
+					lvl.changeBlock(i, j);
+					lvl.changeBlock(i, j - 1);
+				}
+			}
 		}
 	}
 }
@@ -87,6 +97,10 @@ void Engine::drawMap(String map[]) {
 			case 'D': rect.setTexture(&lvl.dirt);
 					  break;
 			case 'G': rect.setTexture(&lvl.grass);
+					  break;
+			case 'C': rect.setTexture(&lvl.chestLeft);
+					  break;
+			case 'T': rect.setTexture(&lvl.chestRight);
 					  break;
 			default: continue;
 			}
@@ -131,9 +145,8 @@ void Engine::start() {
 			}
 		}
 		update(time);
-		// Я как бы сделал, но всё рано выглядит как говно
-		if (player.rect.left > 15 * blockSize && player.rect.left < 65 * blockSize) offsetX = player.rect.left - 15 * blockSize;
-		if (player.rect.top > 4 * blockSize && player.rect.top < 21 * blockSize) offsetY = player.rect.top - 4 * blockSize;
+		if (player.rect.left > 1920 / 2 && player.rect.left < 80 * blockSize - 1920 / 2) offsetX = player.rect.left - 1920 / 2;
+		if (player.rect.top > 1080 / 2 && player.rect.top < 34 * blockSize - 1080 / 2) offsetY = player.rect.top - 1080 / 2;
 		draw();
 	}
 }

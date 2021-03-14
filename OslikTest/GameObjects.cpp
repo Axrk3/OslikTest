@@ -6,7 +6,7 @@ Player::Player() {
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
 	rect = FloatRect(500, ground, 150, 192);
-	dy,dx = 0;
+	dy = 0,dx = 0;
 }
 
 void GameObject::setRect(int id,int value) {
