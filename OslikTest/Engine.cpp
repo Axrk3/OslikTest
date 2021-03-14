@@ -53,11 +53,6 @@ void Engine::update(float time) {
 
 	collision(1);
 
-	if (player.rect.top > player.ground) {
-		player.rect.top = player.ground;
-		player.dy = 0;
-		player.onGround = true;
-	}
 	player.sprite.setPosition(player.rect.left, player.rect.top);
 }
 
@@ -84,7 +79,7 @@ void Engine::collision(int dir) {
 void Engine::drawMap(String map[]) {
 
 	for (int i = 0; i < 34; i++) {
-		for (int j = 0; j < 40; j++) {
+		for (int j = 0; j < 60; j++) {
 			if (map[i][j] == 'B') rect.setFillColor(Color::Black);
 			else {
 				rect.setFillColor(Color::White);
