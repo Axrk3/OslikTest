@@ -27,7 +27,7 @@ Sprite GameObject::getSprite() {
 
 void Player::Jump() {
 	if (dy == 0) {
-		dy = -500;
+		dy = -750;
 	}
 }
 

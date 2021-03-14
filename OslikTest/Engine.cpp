@@ -13,7 +13,8 @@ Engine::Engine() {
 
 	offsetX = offsetY = 0;
 
-	rectSize.x = 32; rectSize.y = 32;
+	blockSize = 64;
+	rectSize.x = blockSize; rectSize.y = blockSize;
 	rect.setSize(rectSize);
 	
 	lvl.changeLevel(map1);
@@ -36,7 +37,7 @@ void Engine::input() {
 		player.dx = 300;
 	}
 	
-	if (Keyboard::isKeyPressed(Keyboard::LShift)) player.dx *= 2;
+	if (Keyboard::isKeyPressed(Keyboard::LShift)) player.dx *= 3;
 	
 	if (Keyboard::isKeyPressed(Keyboard::W)) {
 		player.Jump();
@@ -60,17 +61,17 @@ void Engine::update(float time) {
 
 // 0 - x; 1 - y
 void Engine::collision(int dir) {
-	for (int i = player.getRect().top / 32; i < (player.getRect().top + player.getRect().height) / 32; i++) {
-		for (int j = player.getRect().left / 32; j < (player.getRect().left + player.getRect().width) / 32; j++) {
-			if (lvl.getMap()[i][j] == 'B') {
-				if ((player.dx > 0) && (dir == 0)) player.setRect(0, j * 32 - player.getRect().width);
-				if ((player.dx < 0) && (dir == 0)) player.setRect(0, j * 32 + 32);
+	for (int i = player.getRect().top / blockSize; i < (player.getRect().top + player.getRect().height) / blockSize; i++) {
+		for (int j = player.getRect().left / blockSize; j < (player.getRect().left + player.getRect().width) / blockSize; j++) {
+			if ((lvl.getMap()[i][j] == 'D') || (lvl.getMap()[i][j] == 'G')) {
+				if ((player.dx > 0) && (dir == 0)) player.setRect(0, j * blockSize - player.getRect().width);
+				if ((player.dx < 0) && (dir == 0)) player.setRect(0, j * blockSize + blockSize);
 				if ((player.dy > 0) && (dir == 1)) {
-					player.setRect(1, i * 32 - player.getRect().height);
+					player.setRect(1, i * blockSize - player.getRect().height);
 					player.dy = 0; 
 				}
 				if ((player.dy < 0) && (dir == 1)) {
-					player.setRect(1, i * 32 + 32);
+					player.setRect(1, i * blockSize + blockSize);
 					player.dy = 0;
 				}
 			} 
@@ -82,11 +83,14 @@ void Engine::drawMap(String map[]) {
 
 	for (int i = 0; i < 34; i++) {
 		for (int j = 0; j < 80; j++) {
-			if (map[i][j] == 'B') rect.setTexture(&lvl.dirt);
-			else {
-				continue;
+			switch (map[i][j]) {
+			case 'D': rect.setTexture(&lvl.dirt);
+					  break;
+			case 'G': rect.setTexture(&lvl.grass);
+					  break;
+			default: continue;
 			}
-			rect.setPosition(j * 32 - offsetX,i * 32 - offsetY);
+			rect.setPosition(j * blockSize - offsetX,i * blockSize - offsetY);
 			window.draw(rect);
 		}
 	}
@@ -127,8 +131,9 @@ void Engine::start() {
 			}
 		}
 		update(time);
-		// ѕравую границу нужно доработать и сделать динамичной относительно длинны уровн€
-		if (player.rect.left > 960 && player.rect.left < 1600) offsetX = player.rect.left - 960;
+		// я как бы сделал, но всЄ рано выгл€дит как говно
+		if (player.rect.left > 15 * blockSize && player.rect.left < 65 * blockSize) offsetX = player.rect.left - 15 * blockSize;
+		if (player.rect.top > 4 * blockSize && player.rect.top < 21 * blockSize) offsetY = player.rect.top - 4 * blockSize;
 		draw();
 	}
 }

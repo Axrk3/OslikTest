@@ -12,6 +12,7 @@ private:
 	Sprite backgroundSprite;
 	Texture backgroundTexture;
 	float offsetX, offsetY;
+	int blockSize;
 	void input();
 	void update(float time);
 	void draw();

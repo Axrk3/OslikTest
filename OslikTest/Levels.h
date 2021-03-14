@@ -7,7 +7,8 @@ private:
 	//Массивы с предметами и НПС
 public:
 	Level() {
-		dirt.loadFromFile("dirt.jpg");
+		dirt.loadFromFile("dirt.png");
+		grass.loadFromFile("grass.png");
 	};
 	void changeLevel(String map[]) {
 		this->map = map;
@@ -16,41 +17,42 @@ public:
 		return map;
 	}
 	Texture dirt;
+	Texture grass;
 };
 
 static String map1[34] = {
-	"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                             BB                                               B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B                                                                              B",
-	"B  BB                                                                          B",
-	"B                                                                              B",
-	"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+	"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"D                  G                                                           D",
+	"D                 GD                                                           D",
+	"D                GD                                                            D",
+	"D               GD       G                                                     D",
+	"D              GD        D                                                     D",
+	"DGGGGGGGGGGGGGGDDGGGGGGGGDGGGGGGGGGGGGGG                                       D",
+	"DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDG                                      D",
+	"D                                       DG                                     D",
+	"D                                        DG                                    D",
+	"D                                         DG                                   D",
+	"D                                          DG                                  D",
+	"D                                           DG                                 D",
+	"D                                            DG                                D",
+	"D                                             DG                               D",
+	"D                                              DG                              D",
+	"D                                               DG                             D",
+	"D                                                DG                            D",
+	"D                              G                  DG                           D",
+	"D                             DD                   DG                          D",
+	"D                                                   DG                         D",
+	"D                                                    DG                        D",
+	"D    GG           GG                                                           D",
+	"D                                                                              D",
+	"D                                                                              D",
+	"DGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGD",
+	"DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
 };
