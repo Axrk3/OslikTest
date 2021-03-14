@@ -12,6 +12,8 @@ Engine::Engine() {
 	backgroundTexture.loadFromFile("back.jpg");
 	backgroundSprite.setTexture(backgroundTexture);
 
+	offsetX = offsetY = 0;
+
 	rectSize.x = 32; rectSize.y = 32;
 	rect.setSize(rectSize);
 	
@@ -32,7 +34,9 @@ void Engine::input() {
 
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		player.dx = 300;
-	} 
+	}
+	
+	if (Keyboard::isKeyPressed(Keyboard::LShift)) player.dx *= 2;
 	
 	if (Keyboard::isKeyPressed(Keyboard::W)) {
 		player.Jump();
@@ -45,33 +49,31 @@ void Engine::update(float time) {
 
 	collision(0);
 
-	if (!player.onGround) {
-		player.dy += 1000 * time;
-	}
+	player.dy += 1000 * time;
 
 	player.rect.top += player.dy * time;
 
 	collision(1);
 
-	player.sprite.setPosition(player.rect.left, player.rect.top);
+	player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
 }
 
+// 0 - x; 1 - y
 void Engine::collision(int dir) {
 	for (int i = player.getRect().top / 32; i < (player.getRect().top + player.getRect().height) / 32; i++) {
 		for (int j = player.getRect().left / 32; j < (player.getRect().left + player.getRect().width) / 32; j++) {
 			if (lvl.getMap()[i][j] == 'B') {
-				
 				if ((player.dx > 0) && (dir == 0)) player.setRect(0, j * 32 - player.getRect().width);
 				if ((player.dx < 0) && (dir == 0)) player.setRect(0, j * 32 + 32);
 				if ((player.dy > 0) && (dir == 1)) {
 					player.setRect(1, i * 32 - player.getRect().height);
-					player.dy = 0; player.onGround = true;
+					player.dy = 0; 
 				}
 				if ((player.dy < 0) && (dir == 1)) {
 					player.setRect(1, i * 32 + 32);
 					player.dy = 0;
 				}
-			}
+			} 
 		}
 	}
 }
@@ -79,12 +81,12 @@ void Engine::collision(int dir) {
 void Engine::drawMap(String map[]) {
 
 	for (int i = 0; i < 34; i++) {
-		for (int j = 0; j < 60; j++) {
+		for (int j = 0; j < 80; j++) {
 			if (map[i][j] == 'B') rect.setFillColor(Color::Black);
 			else {
-				rect.setFillColor(Color::White);
+				continue;
 			}
-			rect.setPosition(j * 32,i * 32);
+			rect.setPosition(j * 32 - offsetX,i * 32 - offsetY);
 			window.draw(rect);
 		}
 	}
@@ -125,6 +127,8 @@ void Engine::start() {
 			}
 		}
 		update(time);
+		// Правую границу нужно доработать и сделать динамичной относительно длинны уровня
+		if (player.rect.left > 960 && player.rect.left < 1600) offsetX = player.rect.left - 960;
 		draw();
 	}
 }

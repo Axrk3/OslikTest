@@ -48,7 +48,6 @@ public:
 public:
 	Player();
 	float dx, dy;
-	bool onGround;
 	void Jump();
 };
 

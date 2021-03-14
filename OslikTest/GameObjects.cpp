@@ -26,9 +26,8 @@ Sprite GameObject::getSprite() {
 }
 
 void Player::Jump() {
-	if (onGround) {
+	if (dy == 0) {
 		dy = -500;
-		onGround = false;
 	}
 }
 

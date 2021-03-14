@@ -10,7 +10,7 @@ private:
 	RenderWindow window;
 	Sprite backgroundSprite;
 	Texture backgroundTexture;
-
+	float offsetX, offsetY;
 	void input();
 	void update(float time);
 	void draw();
