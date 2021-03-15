@@ -16,7 +16,6 @@ Engine::Engine() {
 	blockSize = 64;
 	rectSize.x = blockSize; rectSize.y = blockSize;
 	rect.setSize(rectSize);
-	
 	lvl.changeLevel(map1);
 
 }
@@ -26,23 +25,30 @@ void Engine::input() {
 		window.close();
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::A)) {
-		player.dx = -300;
+	if (Keyboard::isKeyPressed(Keyboard::I)) {
+		if (openInventory) openInventory = false;
+		else openInventory = true;
 	}
-	else {
-		player.dx = 0;
-	}
+	// Если инвентарь открыт управление отключено
+	if (!openInventory) {
 
-	if (Keyboard::isKeyPressed(Keyboard::D)) {
-		player.dx = 300;
+		if (Keyboard::isKeyPressed(Keyboard::A)) {
+			player.dx = -300;
+		}
+		else {
+			player.dx = 0;
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::D)) {
+			player.dx = 300;
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::LShift)) player.dx *= 3;
+
+		if (Keyboard::isKeyPressed(Keyboard::W)) {
+			player.Jump();
+		}
 	}
-	
-	if (Keyboard::isKeyPressed(Keyboard::LShift)) player.dx *= 3;
-	
-	if (Keyboard::isKeyPressed(Keyboard::W)) {
-		player.Jump();
-	}
-	
 }
 
 void Engine::update(float time) {
@@ -110,11 +116,17 @@ void Engine::drawMap(String map[]) {
 	}
 }
 
+void Engine::drawInventory() {
+	player.inventory.rect.setPosition(1920/4,1080/4);
+	window.draw(player.inventory.rect);
+}
+
 void Engine::draw() {
 	window.clear(Color::White);
 	window.draw(backgroundSprite);
 	drawMap(lvl.getMap());
 	window.draw(player.getSprite());
+	if (openInventory) drawInventory();
 	window.display();
 }
 

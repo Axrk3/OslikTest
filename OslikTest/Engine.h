@@ -13,10 +13,12 @@ private:
 	Texture backgroundTexture;
 	float offsetX, offsetY;
 	int blockSize;
+	bool openInventory = false;
 	void input();
 	void update(float time);
 	void draw();
 	void drawMap(String map[]);
+	void drawInventory();
 	void collision(int dir);
 	Player player;
 	Level lvl;

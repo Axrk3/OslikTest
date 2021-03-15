@@ -2,6 +2,7 @@
 #include "Levels.h"
 
 Player::Player() {
+	characteristics.HP = 10;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -9,6 +10,7 @@ Player::Player() {
 	dy = 0,dx = 0;
 }
 
+// id: 0 - x, 1 - y
 void GameObject::setRect(int id,int value) {
 	if (id == 0) {
 		this->rect.left = value;
@@ -31,3 +33,15 @@ void Player::Jump() {
 	}
 }
 
+Inventory::Inventory() {
+	quantityConsum, quantityEquip = 0;
+	scale.x = 960; scale.y = 640;
+	rect.setSize(scale);
+}
+
+void Inventory::addItem(Consumable item) {
+
+}
+void Inventory::addItem(Equipment item) {
+
+}

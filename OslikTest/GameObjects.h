@@ -16,8 +16,41 @@ public:
 	FloatRect getRect();
 };
 
+class Item : public GameObject {
+	int quantity;
+	Texture textureInInventory;
+	Sprite spriteInInventory;
+};
+
+
+class Equipment : public Item {
+public:
+	void putOn();
+};
+
+class Consumable : public Item {
+public:
+	void consume();
+	int maxQuantity;
+};
+
+class Inventory {
+public:
+	Consumable consum[8];
+	Equipment equip[8];
+	int quantityConsum, quantityEquip;
+	RectangleShape rect;
+	Vector2f scale;
+	// Сделать смещение player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
+public:
+	Inventory();
+	void open();
+	void addItem(Consumable item);
+	void addItem(Equipment item);
+};
+
 class Character : public GameObject {
-protected:
+public:
 	struct characteristics {
 		int HP,
 			MP,
@@ -26,7 +59,7 @@ protected:
 			Level,
 			Exp,
 			initiative;
-	};
+	}characteristics;
 public:
 	void fight();
 	void getStats();
@@ -44,37 +77,10 @@ class Player : public Character {
 public:
 	int ground;
 	bool jump;
-	Friend friends[5];
+	Inventory inventory;
 public:
 	Player();
 	float dx, dy;
 	void Jump();
 };
 
-class Item : public GameObject {
-	int quantity;
-	Texture textureInInventory;
-	Sprite spriteInInventory;
-};
-
-
-class Equipment : public Item {
-	void putOn();
-};
-
-class Consumable : public Item {
-public:
-	void consume();
-	int maxQuantity;
-};
-
-class Inventory {
-protected:
-	Consumable consum[8];
-	Equipment equip[8];
-public:
-	void show();
-	void addItem(Consumable item);
-	void addItem(Equipment item);
-
-};
