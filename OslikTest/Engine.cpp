@@ -2,7 +2,6 @@
 
 
 Engine::Engine() {
-	Vector2f resolution;
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
 
@@ -10,6 +9,9 @@ Engine::Engine() {
 
 	backgroundTexture.loadFromFile("back.jpg");
 	backgroundSprite.setTexture(backgroundTexture);
+
+	regularFont.loadFromFile("times.ttf");
+	regularText.setFont(regularFont);
 
 	offsetX = offsetY = 0;
 
@@ -27,7 +29,11 @@ void Engine::input() {
 
 	if (Keyboard::isKeyPressed(Keyboard::I)) {
 		if (openInventory) openInventory = false;
-		else openInventory = true;
+		else {
+			player.dx = 0; player.dy = 0;
+			openInventory = true;
+			openChest = false;
+		}
 	}
 	// Если инвентарь открыт управление отключено
 	if (!openInventory) {
@@ -86,10 +92,17 @@ void Engine::collision(int dir) {
 				if (lvl.getMap()[i][j] == 'C') {
 					lvl.changeBlock(i, j);
 					lvl.changeBlock(i, j + 1);
+					
 				} else {
 					lvl.changeBlock(i, j);
 					lvl.changeBlock(i, j - 1);
 				}
+				player.inventory.addItem(player.inventory.consum[0], "test item");
+				regularText.setString("You got item!!");
+				regularText.setCharacterSize(32);
+				regularText.setFillColor(Color::Yellow);
+				regularText.setPosition(i, j);
+				openChest = true;
 			}
 		}
 	}
@@ -117,8 +130,15 @@ void Engine::drawMap(String map[]) {
 }
 
 void Engine::drawInventory() {
-	player.inventory.rect.setPosition(1920/4,1080/4);
+	player.inventory.rect.setPosition(resolution.x/4, resolution.y/4);
 	window.draw(player.inventory.rect);
+	if (player.inventory.consum[0].maxQuantity > 0) {
+		regularText.setString(player.inventory.consum[0].name);
+		regularText.setCharacterSize(14);
+		regularText.setFillColor(Color::Black);
+		regularText.setPosition(resolution.x / 4 + 128, resolution.y / 4 + 64);
+		window.draw(regularText);
+	}
 }
 
 void Engine::draw() {
@@ -127,6 +147,7 @@ void Engine::draw() {
 	drawMap(lvl.getMap());
 	window.draw(player.getSprite());
 	if (openInventory) drawInventory();
+	if (openChest) window.draw(regularText);
 	window.display();
 }
 
@@ -157,8 +178,8 @@ void Engine::start() {
 			}
 		}
 		update(time);
-		if (player.rect.left > 1920 / 2 && player.rect.left < 80 * blockSize - 1920 / 2) offsetX = player.rect.left - 1920 / 2;
-		if (player.rect.top > 1080 / 2 && player.rect.top < 34 * blockSize - 1080 / 2) offsetY = player.rect.top - 1080 / 2;
+		if (player.rect.left > resolution.x / 2 && player.rect.left < 80 * blockSize - resolution.x / 2) offsetX = player.rect.left - resolution.x / 2;
+		if (player.rect.top > resolution.y / 2 && player.rect.top < 34 * blockSize - resolution.y / 2) offsetY = player.rect.top - resolution.y / 2;
 		draw();
 	}
 }

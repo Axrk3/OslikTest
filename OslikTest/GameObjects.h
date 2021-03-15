@@ -30,8 +30,12 @@ public:
 
 class Consumable : public Item {
 public:
-	void consume();
+	String name;
 	int maxQuantity;
+public:
+	Consumable();
+	void consume();
+	
 };
 
 class Inventory {
@@ -45,7 +49,7 @@ public:
 public:
 	Inventory();
 	void open();
-	void addItem(Consumable item);
+	void addItem(Consumable item, String itemName);
 	void addItem(Equipment item);
 };
 
@@ -59,7 +63,7 @@ public:
 			Level,
 			Exp,
 			initiative;
-	}characteristics;
+	} stats;
 public:
 	void fight();
 	void getStats();

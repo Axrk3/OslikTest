@@ -2,7 +2,7 @@
 #include "Levels.h"
 
 Player::Player() {
-	characteristics.HP = 10;
+	stats.HP = 85;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -33,14 +33,20 @@ void Player::Jump() {
 	}
 }
 
+Consumable::Consumable() {
+	name = "";
+	maxQuantity = 0;
+}
+
 Inventory::Inventory() {
-	quantityConsum, quantityEquip = 0;
+	quantityConsum = 0, quantityEquip = 0;
 	scale.x = 960; scale.y = 640;
 	rect.setSize(scale);
 }
 
-void Inventory::addItem(Consumable item) {
-
+void Inventory::addItem(Consumable item, String itemName) {
+	this->consum->name = itemName;
+	this->consum->maxQuantity++;
 }
 void Inventory::addItem(Equipment item) {
 

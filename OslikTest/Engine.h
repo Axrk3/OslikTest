@@ -11,9 +11,12 @@ private:
 	RenderWindow window;
 	Sprite backgroundSprite;
 	Texture backgroundTexture;
+	Font regularFont;
+	Text regularText;
 	float offsetX, offsetY;
 	int blockSize;
 	bool openInventory = false;
+	bool openChest = false;
 	void input();
 	void update(float time);
 	void draw();
@@ -23,7 +26,7 @@ private:
 	Player player;
 	Level lvl;
 	RectangleShape rect;
-	Vector2f rectSize;
+	Vector2f rectSize, resolution;
 public:
 	Engine();
 	void start();
