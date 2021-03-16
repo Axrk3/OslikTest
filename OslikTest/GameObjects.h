@@ -40,8 +40,8 @@ public:
 
 class Inventory {
 public:
-	Consumable consum[8];
-	Equipment equip[8];
+	Consumable consum[12];
+	Equipment equip[12];
 	int quantityConsum, quantityEquip;
 	RectangleShape rect;
 	Vector2f scale;
