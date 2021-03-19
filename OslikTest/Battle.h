@@ -6,11 +6,10 @@ class Battle {
 private:
 	Player *player;
 	Enemy *enemy;
-	RenderWindow *window;
 
 public:
-	Battle(RenderWindow &_window, Player &_player, Enemy &_enemy);
-	void Start();
+	Battle();
+	void Start(RenderWindow &window, Player &_player, Enemy& _enemy);
 	bool isAlive(Character &creature);
 
 };

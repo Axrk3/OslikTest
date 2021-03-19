@@ -1,15 +1,16 @@
 #include "Battle.h"
 
-Battle::Battle(RenderWindow &_window, Player &_player, Enemy &_enemy) {
-	
-	player = &_player;
-	enemy = &_enemy;
+Battle::Battle() {
 }
 
-void Battle::Start() {
-	while (isAlive(*player) && isAlive(*enemy)) {
-		window->clear(Color::White);
-		
+void Battle::Start(RenderWindow &window, Player &_player, Enemy& _enemy) {
+	enemy = &_enemy; player = &_player;
+	while (true) {
+		window.clear(Color::White);
+		window.draw(player->getSprite());
+		window.display();
+		player->stats.HP = 0;
+		if (Keyboard::isKeyPressed(Keyboard::C)) break;
 	}
 }
 

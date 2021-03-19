@@ -1,5 +1,4 @@
 #include "Engine.h"
-#include "Battle.h"
 
 
 Engine::Engine() {
@@ -105,9 +104,8 @@ void Engine::collision(int dir) {
 				regularText.setPosition(i, j);
 				
 				Enemy enemy;
-				Battle battle(window, player, enemy);
-				battle.Start();
-				
+				battle.Start(window, player, enemy);
+				std::cout << player.stats.HP << std::endl;
 
 				openChest = true;
 			}

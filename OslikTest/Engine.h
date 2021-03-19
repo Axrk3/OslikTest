@@ -3,6 +3,7 @@
 #include "GameObjects.h"
 #include "Levels.h"
 #include <iostream>
+#include "Battle.h"
 
 using namespace sf;
 
@@ -13,6 +14,7 @@ private:
 	Texture backgroundTexture;
 	Font regularFont;
 	Text regularText;
+	Battle battle;
 	float offsetX, offsetY;
 	int blockSize;
 	bool openInventory = false;
