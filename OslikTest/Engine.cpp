@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "Battle.h"
 
 
 Engine::Engine() {
@@ -102,6 +103,12 @@ void Engine::collision(int dir) {
 				regularText.setCharacterSize(32);
 				regularText.setFillColor(Color::Yellow);
 				regularText.setPosition(i, j);
+				
+				Enemy enemy;
+				Battle battle(window, player, enemy);
+				battle.Start();
+				
+
 				openChest = true;
 			}
 		}
@@ -180,7 +187,7 @@ void Engine::start() {
 		update(time);
 		if (player.rect.left > resolution.x / 2 && player.rect.left < 80 * blockSize - resolution.x / 2) offsetX = player.rect.left - resolution.x / 2;
 		if (player.rect.top > resolution.y / 2 && player.rect.top < 34 * blockSize - resolution.y / 2) offsetY = player.rect.top - resolution.y / 2;
-		draw();
+		Engine::draw();
 	}
 }
 

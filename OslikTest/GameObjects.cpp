@@ -3,11 +3,22 @@
 
 Player::Player() {
 	stats.HP = 85;
+	stats.ATK = 10;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
-	rect = FloatRect(500, ground, 150, 192);
+	sprite.setColor(Color::Green);
+	rect = FloatRect(250, ground, 150, 192);
 	dy = 0,dx = 0;
+}
+
+Enemy::Enemy() {
+	stats.HP = 100;
+	stats.ATK = 5;
+	texture.loadFromFile("bob.png");
+	sprite.setTexture(texture);
+	sprite.setColor(Color::Red);
+	rect = FloatRect(750, 800, 150, 192);
 }
 
 // id: 0 - x, 1 - y
@@ -25,6 +36,10 @@ FloatRect GameObject::getRect() {
 
 Sprite GameObject::getSprite() {
 	return sprite;
+}
+
+Character::characteristics Character::getStats() {
+	return this->stats;
 }
 
 void Player::Jump() {

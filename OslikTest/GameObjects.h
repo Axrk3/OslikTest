@@ -57,16 +57,17 @@ class Character : public GameObject {
 public:
 	struct characteristics {
 		int HP,
-			MP,
-			ATK,
-			DEF,
-			Level,
-			Exp,
-			initiative;
+			//MP,
+			ATK;
+			//DEF,
+			//Level,
+			//Exp,
+			//initiative;
 	} stats;
 public:
 	void fight();
-	void getStats();
+	characteristics getStats();
+	
 };
 
 class Friend : public Character {
@@ -74,6 +75,8 @@ class Friend : public Character {
 };
 
 class Enemy : public Character {
+public:
+	Enemy();
 	void drop();
 };
 
