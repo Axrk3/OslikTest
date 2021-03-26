@@ -17,6 +17,7 @@ public:
 };
 
 class Item : public GameObject {
+public:
 	int quantity;
 	Texture textureInInventory;
 	Sprite spriteInInventory;
@@ -35,16 +36,16 @@ public:
 public:
 	Consumable();
 	void consume();
-	
+	Sprite getSpriteInInventory();
 };
 
-class Inventory {
+class Inventory : public GameObject {
 public:
-	Consumable consum[12];
-	Equipment equip[12];
+	Consumable consum[8];
+	Equipment equip[8];
+	RectangleShape attackRect;
 	int quantityConsum, quantityEquip;
-	RectangleShape rect;
-	Vector2f scale;
+	
 	// Сделать смещение player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
 public:
 	Inventory();

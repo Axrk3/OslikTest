@@ -71,6 +71,22 @@ void Engine::update(float time) {
 	player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
 }
 
+bool Engine::Battle() {
+	onFight = true;
+
+	while (player.stats.HP > 0 && enemy.stats.HP > 0) {
+		window.clear(Color::White);
+		window.draw(player.getSprite());
+		window.draw(enemy.getSprite());
+		window.display();
+
+		if (Keyboard::isKeyPressed(Keyboard::F)) enemy.stats.HP -= player.stats.ATK;
+		if (Keyboard::isKeyPressed(Keyboard::G)) enemy.stats.HP -= player.stats.ATK + 3;
+	}
+
+	return false;
+}
+
 // 0 - x; 1 - y
 void Engine::collision(int dir) {
 	for (int i = player.getRect().top / blockSize; i < (player.getRect().top + player.getRect().height) / blockSize; i++) {
@@ -97,15 +113,15 @@ void Engine::collision(int dir) {
 					lvl.changeBlock(i, j);
 					lvl.changeBlock(i, j - 1);
 				}
-				player.inventory.addItem(player.inventory.consum[0], "test item");
+				player.inventory.addItem(player.inventory.consum[0], "potion");
 				regularText.setString("You got item!!");
 				regularText.setCharacterSize(32);
 				regularText.setFillColor(Color::Yellow);
-				regularText.setPosition(i, j);
+				regularText.setPosition((i + 4) * blockSize, (j / 4) * blockSize);
 				
-				Enemy enemy;
-				battle.Start(window, player, enemy);
-				std::cout << player.stats.HP << std::endl;
+				prefTime = time;
+				onFight = Battle();
+				counter++;
 
 				openChest = true;
 			}
@@ -135,15 +151,17 @@ void Engine::drawMap(String map[]) {
 }
 
 void Engine::drawInventory() {
-	player.inventory.rect.setPosition(resolution.x/4, resolution.y/4);
-	window.draw(player.inventory.rect);
+	window.draw(player.inventory.getSprite());
+	
 	if (player.inventory.consum[0].maxQuantity > 0) {
-		regularText.setString(player.inventory.consum[0].name);
-		regularText.setCharacterSize(14);
-		regularText.setFillColor(Color::Black);
-		regularText.setPosition(resolution.x / 4 + 128, resolution.y / 4 + 64);
-		window.draw(regularText);
+		window.draw(player.inventory.consum[0].getSpriteInInventory());
 	}
+	
+	Vector2f size;
+	size.x = 13 * player.stats.ATK - 2;
+	size.y = 25;
+	player.inventory.attackRect.setSize(size);
+	window.draw(player.inventory.attackRect);
 }
 
 void Engine::draw() {
@@ -160,7 +178,13 @@ void Engine::start() {
 	Clock clock;
 	while (window.isOpen()) {
 		Time dt = clock.restart();
-		float time = dt.asSeconds();
+		if (!counter) {
+			time = dt.asSeconds();
+		}
+		else {
+			time = prefTime;
+			counter = 0;
+		}
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -168,8 +192,7 @@ void Engine::start() {
 			case Event::Closed:
 				window.close();
 				break;
-
-			case Event::KeyPressed : {
+			case Event::KeyPressed: {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) window.close();
 				input();
 				break;
@@ -182,6 +205,7 @@ void Engine::start() {
 				break;
 			}
 		}
+		
 		update(time);
 		if (player.rect.left > resolution.x / 2 && player.rect.left < 80 * blockSize - resolution.x / 2) offsetX = player.rect.left - resolution.x / 2;
 		if (player.rect.top > resolution.y / 2 && player.rect.top < 34 * blockSize - resolution.y / 2) offsetY = player.rect.top - resolution.y / 2;

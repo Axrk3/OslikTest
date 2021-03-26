@@ -3,7 +3,6 @@
 #include "GameObjects.h"
 #include "Levels.h"
 #include <iostream>
-#include "Battle.h"
 
 using namespace sf;
 
@@ -14,23 +13,24 @@ private:
 	Texture backgroundTexture;
 	Font regularFont;
 	Text regularText;
-	Battle battle;
-	float offsetX, offsetY;
-	int blockSize;
+	float offsetX, offsetY, prefTime = 0, time;
+	int blockSize, counter;
 	bool openInventory = false;
 	bool openChest = false;
+	bool onFight = false;
 	void input();
 	void update(float time);
 	void draw();
 	void drawMap(String map[]);
 	void drawInventory();
 	void collision(int dir);
+	bool Battle();
 	Player player;
+	Enemy enemy;
 	Level lvl;
 	RectangleShape rect;
 	Vector2f rectSize, resolution;
 public:
 	Engine();
 	void start();
-
 };

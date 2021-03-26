@@ -53,15 +53,33 @@ Consumable::Consumable() {
 	maxQuantity = 0;
 }
 
+Sprite Consumable::getSpriteInInventory() {
+	return spriteInInventory;
+}
+
 Inventory::Inventory() {
 	quantityConsum = 0, quantityEquip = 0;
-	scale.x = 960; scale.y = 640;
-	rect.setSize(scale);
+
+	texture.loadFromFile("inventory.png");
+	sprite.setTexture(texture);
+	sprite.setPosition(480, 270);
+
+	
+	attackRect.setPosition(1248, 328);
+	attackRect.setFillColor(Color::Red);
 }
 
 void Inventory::addItem(Consumable item, String itemName) {
 	this->consum->name = itemName;
 	this->consum->maxQuantity++;
+	
+	itemName += ".png";
+
+	this->consum->textureInInventory.loadFromFile(itemName);
+	this->consum->spriteInInventory.setTexture(this->consum->textureInInventory);
+	this->consum->spriteInInventory.setPosition(543, 323);
+
+	
 }
 void Inventory::addItem(Equipment item) {
 
