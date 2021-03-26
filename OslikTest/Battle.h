@@ -10,6 +10,7 @@ private:
 public:
 	Battle();
 	void Start(RenderWindow &window, Player &_player, Enemy& _enemy);
-	bool isAlive(Character &creature);
+	bool isAlive(Character creature);
+	void input();
 
 };
