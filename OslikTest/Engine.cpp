@@ -57,6 +57,38 @@ void Engine::input() {
 	}
 }
 
+void Engine::battleFunc(float x) {
+	Font font;
+	Text text;
+
+	player.sprite.setPosition(VideoMode::getDesktopMode().width / 2 - 400, VideoMode::getDesktopMode().height / 2);
+	enemy.sprite.setPosition(VideoMode::getDesktopMode().width / 2 + 400, VideoMode::getDesktopMode().height / 2);
+	font.loadFromFile("times.ttf");
+	text.setFont(font);
+	
+	mutex.lock();
+	while (player.stats.HP > 0 && enemy.stats.HP > 0) {
+		window.clear(Color::White);
+
+		window.draw(player.getSprite());
+		window.draw(enemy.getSprite());
+
+
+		if (Keyboard::isKeyPressed(Keyboard::F)) {
+			enemy.stats.HP -= 5 * player.stats.ATK;
+			text.setString("You hit him!");
+			text.setCharacterSize(18);
+			text.setFillColor(Color::Red);
+			text.setPosition(VideoMode::getDesktopMode().width / 2 + 400, VideoMode::getDesktopMode().height / 2);
+			window.draw(text);
+		}
+
+		window.display();
+		sleep(seconds(x));
+	}
+	mutex.unlock();
+}
+
 void Engine::update(float time) {
 	player.rect.left += player.dx * time;
 
@@ -69,22 +101,6 @@ void Engine::update(float time) {
 	collision(1);
 
 	player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
-}
-
-bool Engine::Battle() {
-	onFight = true;
-
-	while (player.stats.HP > 0 && enemy.stats.HP > 0) {
-		window.clear(Color::White);
-		window.draw(player.getSprite());
-		window.draw(enemy.getSprite());
-		window.display();
-
-		if (Keyboard::isKeyPressed(Keyboard::F)) enemy.stats.HP -= player.stats.ATK;
-		if (Keyboard::isKeyPressed(Keyboard::G)) enemy.stats.HP -= player.stats.ATK + 3;
-	}
-
-	return false;
 }
 
 // 0 - x; 1 - y
@@ -120,8 +136,12 @@ void Engine::collision(int dir) {
 				regularText.setPosition((i + 4) * blockSize, (j / 4) * blockSize);
 				
 				prefTime = time;
-				onFight = Battle();
-				counter++;
+				//Battle battle(player, enemy);
+				//Thread battleThread();
+				sf::Thread battleThread(&Engine::battleFunc, this);
+				battleThread.launch();
+				//battle.StartBattle(window);
+				onFight = true;
 
 				openChest = true;
 			}
@@ -178,12 +198,12 @@ void Engine::start() {
 	Clock clock;
 	while (window.isOpen()) {
 		Time dt = clock.restart();
-		if (!counter) {
+		if (!onFight) {
 			time = dt.asSeconds();
 		}
 		else {
 			time = prefTime;
-			counter = 0;
+			onFight = false;
 		}
 		Event event;
 		while (window.pollEvent(event))

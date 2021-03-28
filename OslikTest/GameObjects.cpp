@@ -3,7 +3,7 @@
 
 Player::Player() {
 	stats.HP = 85;
-	stats.ATK = 7;
+	stats.ATK = 5;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);

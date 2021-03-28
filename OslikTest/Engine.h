@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameObjects.h"
 #include "Levels.h"
+#include "Battle.h"
 #include <iostream>
 
 using namespace sf;
@@ -13,7 +14,7 @@ private:
 	Texture backgroundTexture;
 	Font regularFont;
 	Text regularText;
-	float offsetX, offsetY, prefTime = 0, time;
+	float offsetX, offsetY, prefTime, time;
 	int blockSize, counter;
 	bool openInventory = false;
 	bool openChest = false;
@@ -24,7 +25,8 @@ private:
 	void drawMap(String map[]);
 	void drawInventory();
 	void collision(int dir);
-	bool Battle();
+	void battleFunc(float x);
+	Mutex mutex;
 	Player player;
 	Enemy enemy;
 	Level lvl;
