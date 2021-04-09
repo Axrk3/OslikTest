@@ -14,8 +14,8 @@ private:
 	Texture backgroundTexture;
 	Font regularFont;
 	Text regularText;
-	float offsetX, offsetY, prefTime, time;
-	int blockSize, counter;
+	float offsetX, offsetY, prefTime = 0, time;
+	int blockSize;
 	bool openInventory = false;
 	bool openChest = false;
 	bool onFight = false;
@@ -25,7 +25,6 @@ private:
 	void drawMap(String map[]);
 	void drawInventory();
 	void collision(int dir);
-	void battleFunc(float x);
 	Mutex mutex;
 	Player player;
 	Enemy enemy;

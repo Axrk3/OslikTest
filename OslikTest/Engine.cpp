@@ -57,38 +57,6 @@ void Engine::input() {
 	}
 }
 
-void Engine::battleFunc(float x) {
-	Font font;
-	Text text;
-
-	player.sprite.setPosition(VideoMode::getDesktopMode().width / 2 - 400, VideoMode::getDesktopMode().height / 2);
-	enemy.sprite.setPosition(VideoMode::getDesktopMode().width / 2 + 400, VideoMode::getDesktopMode().height / 2);
-	font.loadFromFile("times.ttf");
-	text.setFont(font);
-	
-	mutex.lock();
-	while (player.stats.HP > 0 && enemy.stats.HP > 0) {
-		window.clear(Color::White);
-
-		window.draw(player.getSprite());
-		window.draw(enemy.getSprite());
-
-
-		if (Keyboard::isKeyPressed(Keyboard::F)) {
-			enemy.stats.HP -= 5 * player.stats.ATK;
-			text.setString("You hit him!");
-			text.setCharacterSize(18);
-			text.setFillColor(Color::Red);
-			text.setPosition(VideoMode::getDesktopMode().width / 2 + 400, VideoMode::getDesktopMode().height / 2);
-			window.draw(text);
-		}
-
-		window.display();
-		sleep(seconds(x));
-	}
-	mutex.unlock();
-}
-
 void Engine::update(float time) {
 	player.rect.left += player.dx * time;
 
@@ -136,11 +104,8 @@ void Engine::collision(int dir) {
 				regularText.setPosition((i + 4) * blockSize, (j / 4) * blockSize);
 				
 				prefTime = time;
-				//Battle battle(player, enemy);
-				//Thread battleThread();
-				sf::Thread battleThread(&Engine::battleFunc, this);
-				battleThread.launch();
-				//battle.StartBattle(window);
+				Battle battle(player, enemy);
+				battle.battleStart(window);
 				onFight = true;
 
 				openChest = true;

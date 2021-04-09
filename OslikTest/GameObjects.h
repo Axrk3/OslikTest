@@ -43,7 +43,7 @@ class Inventory : public GameObject {
 public:
 	Consumable consum[8];
 	Equipment equip[8];
-	RectangleShape attackRect;
+	RectangleShape attackRect, hpRect;
 	int quantityConsum, quantityEquip;
 	
 	// Сделать смещение player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
@@ -77,6 +77,8 @@ class Friend : public Character {
 
 class Enemy : public Character {
 public:
+	RectangleShape hpRect;
+
 	Enemy();
 	void drop();
 };
