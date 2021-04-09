@@ -8,6 +8,10 @@ Battle::Battle(Player &_player, Enemy &_enemy) {
 	resolution.y = VideoMode::getDesktopMode().height;
 }
 
+void Battle::battleEnd() {
+	
+}
+
 void Battle::menuInitialization() {
 	Vector2f menuSize;
 	menuSize.x = resolution.x / 2;
@@ -176,8 +180,16 @@ void Battle::input() {
 	}
 }
 
+void Battle::defenceUp(Character &defender) {
+	defender.stats.DEF += 10;
+}
+
+void Battle::defenceDown(Character& defender) {
+	defender.stats.DEF -= 10;
+}
+
 void Battle::attack(Character &attacker, Character &defender) {
-	defender.stats.HP -= attacker.stats.ATK;
+	defender.stats.HP -= attacker.stats.ATK / defender.stats.DEF;
 }
 
 void Battle::actionProcessing() {
@@ -188,7 +200,8 @@ void Battle::actionProcessing() {
 			isAttacked = true;
 			break;
 		case 2:
-
+			defenceUp(player);
+			isBlocked = true;
 			break;
 		case 3:
 			
@@ -223,10 +236,14 @@ void Battle::battleStart(RenderWindow &window) {
 			attack(enemy, player);
 			isAttacked = false;
 		}
-			
+
+		if (isBlocked) {
+			attack(enemy, player);
+			defenceDown(player);
+			isBlocked = false;
+		}
 
 		window.draw(cursor);
 		window.display();
 	}
-
 }

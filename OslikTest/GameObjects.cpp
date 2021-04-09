@@ -4,6 +4,7 @@
 Player::Player() {
 	stats.HP = 85;
 	stats.ATK = 5;
+	stats.DEF = 2;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -14,7 +15,8 @@ Player::Player() {
 
 Enemy::Enemy() {
 	stats.HP = 100;
-	stats.ATK = 5;
+	stats.ATK = 20;
+	stats.DEF = 1;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
 	sprite.setColor(Color::Red);
@@ -81,6 +83,7 @@ void Inventory::addItem(Consumable item, String itemName) {
 
 	
 }
+
 void Inventory::addItem(Equipment item) {
 
 }

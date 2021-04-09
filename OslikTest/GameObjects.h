@@ -59,8 +59,8 @@ public:
 	struct characteristics {
 		int HP,
 			//MP,
-			ATK;
-			//DEF,
+			ATK,
+			DEF;
 			//Level,
 			//Exp,
 			//initiative;

@@ -9,6 +9,7 @@ class Battle {
 	RectangleShape menu, *menuBar, cursor, *hpBar, *outlineHP;
 	int action;
 	bool isAttacked;
+	bool isBlocked;
 	Font font;
 	Text *text;
 	
@@ -22,5 +23,11 @@ public:
 	void cursorInitialization();
 	void unitInitialization();
 	void input();
+
+	//======================
+	void battleEnd();
+	void defenceUp(Character &defender);
+	void defenceDown(Character &defender);
+	//======================
 	void attack(Character &attacker, Character &defender);
 };
