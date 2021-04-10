@@ -178,7 +178,7 @@ void Engine::start() {
 				window.close();
 				break;
 			case Event::KeyPressed: {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) window.close();
+				if (Keyboard::isKeyPressed(Keyboard::Escape)) window.close();
 				input();
 				break;
 			}

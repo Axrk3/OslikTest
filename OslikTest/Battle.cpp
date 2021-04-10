@@ -8,8 +8,34 @@ Battle::Battle(Player &_player, Enemy &_enemy) {
 	resolution.y = VideoMode::getDesktopMode().height;
 }
 
-void Battle::battleEnd() {
-	
+int Battle::battleEnd(RenderWindow &window) {
+	Texture endTexture;
+	Sprite endSprite;
+
+	if (player.stats.HP <= 0 || enemy.stats.HP <= 0) {
+		if (player.stats.HP <= 0)
+			endTexture.loadFromFile("ded.png");
+		else
+			endTexture.loadFromFile("win.png");
+
+		endSprite.setTexture(endTexture);
+		endSprite.setPosition(11 * resolution.x / 24, 9 * resolution.y / 27);
+
+		do 
+		{
+			window.clear(Color::White);
+			window.draw(endSprite);
+			window.display();
+			sleep(seconds(0.1f));
+		} while (!Keyboard::isKeyPressed(Keyboard::Enter));
+		
+		if (player.stats.HP <= 0)
+			return 0;
+		else
+			return 1;
+	}
+
+	return 2;
 }
 
 void Battle::menuInitialization() {
@@ -220,7 +246,7 @@ void Battle::battleStart(RenderWindow &window) {
 	textInitialization();
 	cursorInitialization();
 
-	while (player.stats.HP > 0 && enemy.stats.HP > 0) {
+	while (true) {
 		sleep(seconds(0.1f));
 
 		window.clear(Color::White);
@@ -245,5 +271,15 @@ void Battle::battleStart(RenderWindow &window) {
 
 		window.draw(cursor);
 		window.display();
+
+		switch (battleEnd(window))
+		{
+		case 0: 
+			exit(0);
+		case 1: 
+			return;
+		default:
+			break;
+		}
 	}
 }

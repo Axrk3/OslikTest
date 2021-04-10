@@ -7,6 +7,7 @@ class Battle {
 
 	Vector2f resolution, currentPosition;
 	RectangleShape menu, *menuBar, cursor, *hpBar, *outlineHP;
+	FloatRect endMenu;
 	int action;
 	bool isAttacked;
 	bool isBlocked;
@@ -15,8 +16,8 @@ class Battle {
 	
 public: 
 	Battle(Player &_player, Enemy &_enemy);
-	void battleStart(RenderWindow& window);
-	void drawElements(RenderWindow& window);
+	void battleStart(RenderWindow &window);
+	void drawElements(RenderWindow &window);
 	void actionProcessing();
 	void menuInitialization();
 	void textInitialization();
@@ -25,7 +26,7 @@ public:
 	void input();
 
 	//======================
-	void battleEnd();
+	int battleEnd(RenderWindow &window);
 	void defenceUp(Character &defender);
 	void defenceDown(Character &defender);
 	//======================
