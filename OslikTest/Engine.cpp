@@ -5,7 +5,7 @@ Engine::Engine() {
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
 
-	window.create(VideoMode(resolution.x, resolution.y), "Game Engine v.1", Style::Fullscreen);
+	window.create(VideoMode(1920, 1080), "Game Engine v.1");
 
 	backgroundTexture.loadFromFile("back.jpg");
 	backgroundSprite.setTexture(backgroundTexture);
