@@ -147,6 +147,8 @@ void Battle::unitInitialization() {
 }
 
 void Battle::drawElements(RenderWindow& window) {
+	window.clear(Color::White);
+	
 	window.draw(player.getSprite());
 	window.draw(enemy.getSprite());
 
@@ -174,6 +176,8 @@ void Battle::drawElements(RenderWindow& window) {
 		window.draw(menuBar[i]);
 		window.draw(text[i]);
 	}
+
+	window.draw(cursor);
 }
 
 void Battle::input() {
@@ -214,15 +218,37 @@ void Battle::defenceDown(Character& defender) {
 	defender.stats.DEF -= 10;
 }
 
-void Battle::attack(Character &attacker, Character &defender) {
+void Battle::attack(Character& attacker, Character& defender, int speed, RenderWindow& window) {
+	Vector2f offset;
+	offset.x = speed * 0.05;
+	offset.y = 0;
+	int counter = 0;
+
+	while (attacker.sprite.getPosition().x != defender.sprite.getPosition().x) {
+		attacker.sprite.move(offset);
+
+		counter++;
+
+		drawElements(window);
+		window.display();
+	}
+
 	defender.stats.HP -= attacker.stats.ATK / defender.stats.DEF;
+
+	while (counter) {
+		attacker.sprite.move(-offset);
+		counter--;
+
+		drawElements(window);
+		window.display();
+	}
 }
 
-void Battle::actionProcessing() {
+void Battle::actionProcessing(RenderWindow &window) {
 	if (Keyboard::isKeyPressed(Keyboard::Enter)) {
 		switch (action) {
 		case 1:
-			attack(player, enemy);
+			attack(player, enemy, 10, window);
 			isAttacked = true;
 			break;
 		case 2:
@@ -246,30 +272,31 @@ void Battle::battleStart(RenderWindow &window) {
 	textInitialization();
 	cursorInitialization();
 
-	while (true) {
-		sleep(seconds(0.1f));
+	Clock clock;
 
-		window.clear(Color::White);
+	while (true) {
+		Time dt = clock.restart();
+		time = dt.asSeconds();
+		sleep(seconds(0.1f));
 		
 		drawElements(window);
 		
 		cursor.setPosition(currentPosition);
 
 		input();
-		actionProcessing();
+		actionProcessing(window);
 
 		if (isAttacked) {
-			attack(enemy, player);
+			attack(enemy, player, -10, window);
 			isAttacked = false;
 		}
 
 		if (isBlocked) {
-			attack(enemy, player);
+			attack(enemy, player, -10, window);
 			defenceDown(player);
 			isBlocked = false;
 		}
 
-		window.draw(cursor);
 		window.display();
 
 		switch (battleEnd(window))
