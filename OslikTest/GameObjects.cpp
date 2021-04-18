@@ -51,6 +51,7 @@ void Player::Jump() {
 }
 
 Consumable::Consumable() {
+	rect.height = rect.width = 64;
 	name = "";
 	maxQuantity = 0;
 }
@@ -69,19 +70,33 @@ Inventory::Inventory() {
 	
 	attackRect.setPosition(1248, 328);
 	attackRect.setFillColor(Color::Red);
+
+	items = new Item[8];
+
+	items[0].rect.left = 540;
+	items[0].rect.top = 320;
+
+	items[1].rect.left = 640;
+	items[1].rect.top = 320;
+	/*for (int i = 0; i < 8; i++) {
+		items[i].rect.setSize(Vector2f(64,64));
+		if (i % 2 == 0) {
+			items[i].rect.setPosition(540,  320);
+		}
+	}*/
 }
 
-void Inventory::addItem(Consumable item, String itemName) {
-	this->consum->name = itemName;
-	this->consum->maxQuantity++;
-	
-	itemName += ".png";
-
-	this->consum->textureInInventory.loadFromFile(itemName);
-	this->consum->spriteInInventory.setTexture(this->consum->textureInInventory);
-	this->consum->spriteInInventory.setPosition(543, 323);
-
-	
+void Inventory::addItem(Consumable &item) {
+	for (int i = 0; i < 8; i++) {
+		if (items[i].isEmpty) {
+			item.rect.left = items[i].rect.left;
+			item.rect.top = items[i].rect.top;
+			item.spriteInInventory.setPosition(item.rect.left,item.rect.top);
+			item.isEmpty = false;
+			items[i] = item;
+			break;
+		}
+	}
 }
 
 void Inventory::addItem(Equipment item) {

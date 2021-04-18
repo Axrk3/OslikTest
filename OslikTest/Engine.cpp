@@ -20,6 +20,12 @@ Engine::Engine() {
 	rect.setSize(rectSize);
 	lvl.changeLevel(map1);
 
+	Consumable potion;
+	// Переделать в отдельную функцию(Возможно через конструктор)
+	potion.name = "potion";
+	potion.textureInInventory.loadFromFile("potion.png");
+	potion.spriteInInventory.setTexture(potion.textureInInventory);
+	player.inventory.addItem(potion);
 }
 
 void Engine::input() {
@@ -97,7 +103,7 @@ void Engine::collision(int dir) {
 					lvl.changeBlock(i, j);
 					lvl.changeBlock(i, j - 1);
 				}
-				player.inventory.addItem(player.inventory.consum[0], "potion");
+				//player.inventory.addItem(player.inventory.consum[0], "potion");
 				regularText.setString("You got item!!");
 				regularText.setCharacterSize(32);
 				regularText.setFillColor(Color::Yellow);
@@ -138,8 +144,10 @@ void Engine::drawMap(String map[]) {
 void Engine::drawInventory() {
 	window.draw(player.inventory.getSprite());
 	
-	if (player.inventory.consum[0].maxQuantity > 0) {
-		window.draw(player.inventory.consum[0].getSpriteInInventory());
+	for (int i = 0; i < 2; i++) {
+		if (!player.inventory.items[i].isEmpty) {
+			window.draw(player.inventory.items[i].spriteInInventory);
+		}
 	}
 	
 	Vector2f size;

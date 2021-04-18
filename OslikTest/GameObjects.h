@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 using namespace sf;
 
@@ -18,7 +19,7 @@ public:
 
 class Item : public GameObject {
 public:
-	int quantity;
+	bool isEmpty = true;
 	Texture textureInInventory;
 	Sprite spriteInInventory;
 };
@@ -39,18 +40,23 @@ public:
 	Sprite getSpriteInInventory();
 };
 
+/*class Cell {
+public:
+	FloatRect rect;
+	Item item;
+	bool isEmpty = true;
+};*/
+
 class Inventory : public GameObject {
 public:
-	Consumable consum[8];
-	Equipment equip[8];
+	Item *items;
 	RectangleShape attackRect, hpRect;
 	int quantityConsum, quantityEquip;
 	
-	// Сделать смещение player.sprite.setPosition(player.rect.left - offsetX, player.rect.top - offsetY);
 public:
 	Inventory();
 	void open();
-	void addItem(Consumable item, String itemName);
+	void addItem(Consumable &item);
 	void addItem(Equipment item);
 };
 
