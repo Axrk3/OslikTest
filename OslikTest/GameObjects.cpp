@@ -93,7 +93,7 @@ void Inventory::addItem(Consumable &item) {
 			item.rect.top = items[i].rect.top;
 			item.spriteInInventory.setPosition(item.rect.left,item.rect.top);
 			item.isEmpty = false;
-			items[i] = item;
+			items[i].spriteInInventory.setTexture(item.textureInInventory);
 			break;
 		}
 	}
