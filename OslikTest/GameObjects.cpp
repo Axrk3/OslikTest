@@ -71,8 +71,6 @@ Inventory::Inventory() {
 	attackRect.setPosition(1248, 328);
 	attackRect.setFillColor(Color::Red);
 
-	items = new Item[8];
-
 	items[0].rect.left = 540;
 	items[0].rect.top = 320;
 

@@ -20,7 +20,6 @@ Engine::Engine() {
 	rect.setSize(rectSize);
 	lvl.changeLevel(map1);
 
-	Consumable potion;
 	// Переделать в отдельную функцию(Возможно через конструктор)
 	potion.name = "potion";
 	potion.textureInInventory.loadFromFile("potion.png");
