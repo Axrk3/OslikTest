@@ -31,6 +31,7 @@ private:
 	Level lvl;
 	RectangleShape rect;
 	Vector2f rectSize, resolution;
+	Consumable potion;
 public:
 	Engine();
 	void start();

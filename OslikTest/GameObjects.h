@@ -49,7 +49,7 @@ public:
 
 class Inventory : public GameObject {
 public:
-	Item *items;
+	Consumable items[8];
 	RectangleShape attackRect, hpRect;
 	int quantityConsum, quantityEquip;
 	
