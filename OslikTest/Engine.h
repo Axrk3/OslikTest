@@ -27,7 +27,6 @@ private:
 	void collision(int dir);
 	Mutex mutex;
 	Player player;
-	Enemy enemy;
 	Level lvl;
 	RectangleShape rect;
 	Vector2f rectSize, resolution;

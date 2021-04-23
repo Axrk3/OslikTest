@@ -3,19 +3,19 @@
 
 class Battle {
 	Player player;
-	Enemy enemy;
+	Enemy *enemy;
+	int enemyAmount, deadEnemy, playerAmount = 1;
 
 	Vector2f resolution, currentPosition;
-	RectangleShape menu, *menuBar, cursor, *hpBar, *outlineHP;
+	RectangleShape menu, *menuBar, cursor, hpBar, outlineHP;
 	FloatRect endMenu;
-	float time;
 	int action;
-	bool isAttacked, isBlocked;
+	bool isAction, isBlocked;
 	Font font;
-	Text *text;
+	Text *text, attackText;
 	
 public: 
-	Battle(Player &_player, Enemy &_enemy);
+	Battle(Player &_player, Enemy *&_enemy, int _enemyAmount);
 	void battleStart(RenderWindow &window);
 	void drawElements(RenderWindow &window);
 	void actionProcessing(RenderWindow &window);
@@ -31,4 +31,5 @@ public:
 	void defenceDown(Character &defender);
 	//======================
 	void attack(Character &attacker, Character &defender, int speed, RenderWindow &window);
+	int chooseEnemy(RenderWindow &window);
 };

@@ -109,7 +109,9 @@ void Engine::collision(int dir) {
 				regularText.setPosition((i + 4) * blockSize, (j / 4) * blockSize);
 				
 				prefTime = time;
-				Battle battle(player, enemy);
+				int enemyAmount = 3;
+				Enemy* enemy = new Enemy[enemyAmount];
+				Battle battle(player, enemy, enemyAmount);
 				battle.battleStart(window);
 				onFight = true;
 

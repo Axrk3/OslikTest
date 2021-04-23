@@ -1,8 +1,11 @@
 #include "Battle.h"
 
-Battle::Battle(Player &_player, Enemy &_enemy) {
+Battle::Battle(Player &_player, Enemy *&_enemy, int _enemyAmount) {
 	player = _player;
 	enemy = _enemy;
+
+	enemyAmount = _enemyAmount;
+	deadEnemy = 0;
 
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
@@ -12,10 +15,10 @@ int Battle::battleEnd(RenderWindow &window) {
 	Texture endTexture;
 	Sprite endSprite;
 
-	if (player.stats.HP <= 0 || enemy.stats.HP <= 0) {
-		if (player.stats.HP <= 0)
+	if (!player.isAlive() || deadEnemy == enemyAmount) {
+		if (!player.isAlive())
 			endTexture.loadFromFile("ded.png");
-		else
+		else 
 			endTexture.loadFromFile("win.png");
 
 		endSprite.setTexture(endTexture);
@@ -28,8 +31,8 @@ int Battle::battleEnd(RenderWindow &window) {
 			window.display();
 			sleep(seconds(0.1f));
 		} while (!Keyboard::isKeyPressed(Keyboard::Enter));
-		
-		if (player.stats.HP <= 0)
+
+		if (!player.isAlive())
 			return 0;
 		else
 			return 1;
@@ -114,62 +117,39 @@ void Battle::cursorInitialization() {
 }
 
 void Battle::unitInitialization() {
-	player.sprite.setPosition(resolution.x / 4, resolution.y / 4);
-	enemy.sprite.setPosition(3 * resolution.x / 4, resolution.y / 4);
+	player.sprite.setPosition(resolution.x / 8, resolution.y / 4);
+	for (int i = 0; i < enemyAmount; i++)
+		enemy[i].sprite.setPosition((i + 5) * resolution.x / 8, (i + 1) * resolution.y / 8);
 
 	Vector2f outlineHPSize;
 	outlineHPSize.y = resolution.y / 64;
 
-	hpBar = new RectangleShape[2];
-	outlineHP = new RectangleShape[2];
-	for (int i = 0; i < 2; i++) {
-		hpBar[i].setFillColor(Color::Red);
-		outlineHP[i].setOutlineThickness(1);
-		outlineHP[i].setOutlineColor(Color::Black);
-		outlineHP[i].setFillColor(Color::Transparent);
-
-		switch (i) {
-		case 0:
-			hpBar[i].setPosition(resolution.x / 4, 3 * resolution.y / 16);
-			outlineHP[i].setPosition(resolution.x / 4, 3 * resolution.y / 16);
-			outlineHPSize.x = player.stats.HP;
-			outlineHP[i].setSize(outlineHPSize);
-			break;
-		case 1: 
-			hpBar[i].setPosition(3 * resolution.x / 4, 3 * resolution.y / 16);
-			outlineHP[i].setPosition(3 * resolution.x / 4, 3 * resolution.y / 16);
-			outlineHPSize.x = enemy.stats.HP;
-			outlineHP[i].setSize(outlineHPSize);
-			break;
-		}
-	}
-
+	hpBar.setFillColor(Color::Red);
+	outlineHP.setOutlineThickness(1);
+	outlineHP.setOutlineColor(Color::Black);
+	outlineHP.setFillColor(Color::Transparent);
+	
+	hpBar.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - resolution.y / 16);
+	outlineHP.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - resolution.y / 16);
+	outlineHPSize.x = player.stats.HP;
+	outlineHP.setSize(outlineHPSize);
 }
 
-void Battle::drawElements(RenderWindow& window) {
+void Battle::drawElements(RenderWindow &window) {
 	window.clear(Color::White);
 	
 	window.draw(player.getSprite());
-	window.draw(enemy.getSprite());
+	for (int i = 0; i < enemyAmount; i++)
+		if (enemy[i].isAlive())
+			window.draw(enemy[i].getSprite());
 
 	Vector2f hpBarSize;
 	hpBarSize.y = resolution.y / 64;
-	for (int i = 0; i < 2; i++){
-		switch (i)
-		{
-		case 0:
-			hpBarSize.x = player.stats.HP;
-			hpBar[i].setSize(hpBarSize);
-			break;
-		case 1:
-			hpBarSize.x = enemy.stats.HP;
-			hpBar[i].setSize(hpBarSize);
-			break;
-		}
+	hpBarSize.x = player.stats.HP;
+	hpBar.setSize(hpBarSize);
 
-		window.draw(hpBar[i]);
-		window.draw(outlineHP[i]);
-	}
+	window.draw(hpBar);
+	window.draw(outlineHP);
 
 	window.draw(menu);
 	for (int i = 0; i < 4; i++) {
@@ -214,45 +194,87 @@ void Battle::defenceUp(Character &defender) {
 	defender.stats.DEF += 10;
 }
 
-void Battle::defenceDown(Character& defender) {
+void Battle::defenceDown(Character &defender) {
 	defender.stats.DEF -= 10;
 }
 
-void Battle::attack(Character& attacker, Character& defender, int speed, RenderWindow& window) {
+void Battle::attack(Character &attacker, Character &defender, int speed, RenderWindow &window) {
 	Vector2f offset;
 	offset.x = speed * 0.05;
 	offset.y = 0;
-	int counter = 0;
+	int step = 0;
 
 	while (attacker.sprite.getPosition().x != defender.sprite.getPosition().x) {
 		attacker.sprite.move(offset);
 
-		counter++;
+		step++;
 
 		drawElements(window);
 		window.display();
 	}
 
 	defender.stats.HP -= attacker.stats.ATK / defender.stats.DEF;
+	if (!defender.isAlive())
+		deadEnemy++;
 
-	while (counter) {
+	while (step) {
 		attacker.sprite.move(-offset);
-		counter--;
+		step--;
 
 		drawElements(window);
 		window.display();
 	}
 }
 
+int Battle::chooseEnemy(RenderWindow &window) {
+	int choice;
+	for (int i = 0; i < enemyAmount; i++)
+		if (enemy[i].isAlive()) {
+			choice = i;
+			break;
+		}
+	cursor.setPosition(enemy[choice].sprite.getPosition());
+
+	do {
+		if (Keyboard::isKeyPressed(Keyboard::Up)) {
+			if (choice != 0) {
+				choice--;
+				if (enemy[choice].isAlive())
+					cursor.setPosition(enemy[choice].sprite.getPosition());
+			}
+
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Down)) {
+			if (choice != enemyAmount - 1) {
+				choice++;
+				if (enemy[choice].isAlive())
+					cursor.setPosition(enemy[choice].sprite.getPosition());
+			}
+		}
+
+		drawElements(window);
+		window.display();
+		sleep(seconds(0.1f));
+	} while (!Keyboard::isKeyPressed(Keyboard::Enter));
+		
+
+	return choice;
+}
+
 void Battle::actionProcessing(RenderWindow &window) {
+	int choice;
+
 	if (Keyboard::isKeyPressed(Keyboard::Enter)) {
 		switch (action) {
 		case 1:
-			attack(player, enemy, 10, window);
-			isAttacked = true;
+			choice = chooseEnemy(window);
+			attack(player, enemy[choice], 20, window);
+			isAction = true;
 			break;
 		case 2:
 			defenceUp(player);
+			isAction = true;
 			isBlocked = true;
 			break;
 		case 3:
@@ -272,31 +294,31 @@ void Battle::battleStart(RenderWindow &window) {
 	textInitialization();
 	cursorInitialization();
 
-	Clock clock;
-
 	while (true) {
-		Time dt = clock.restart();
-		time = dt.asSeconds();
 		sleep(seconds(0.1f));
-		
+
 		drawElements(window);
-		
+
 		cursor.setPosition(currentPosition);
 
 		input();
 		actionProcessing(window);
 
-		if (isAttacked) {
-			attack(enemy, player, -10, window);
-			isAttacked = false;
-		}
+		cursor.setPosition(currentPosition);
 
+		if (isAction) {
+			for (int i = 0; i < enemyAmount; i++) {
+				if (enemy[i].isAlive())
+					attack(enemy[i], player, -20, window);
+			}
+			isAction = false;
+		}
+			
 		if (isBlocked) {
-			attack(enemy, player, -10, window);
 			defenceDown(player);
+			isAction = false;
 			isBlocked = false;
 		}
-
 		window.display();
 
 		switch (battleEnd(window))

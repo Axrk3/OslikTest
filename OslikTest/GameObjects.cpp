@@ -3,7 +3,7 @@
 
 Player::Player() {
 	stats.HP = 85;
-	stats.ATK = 5;
+	stats.ATK = 10;
 	stats.DEF = 2;
 	ground = 800;
 	texture.loadFromFile("bob.png");
@@ -14,8 +14,8 @@ Player::Player() {
 }
 
 Enemy::Enemy() {
-	stats.HP = 100;
-	stats.ATK = 20;
+	stats.HP = 20;
+	stats.ATK = 10;
 	stats.DEF = 1;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -42,6 +42,13 @@ Sprite GameObject::getSprite() {
 
 Character::characteristics Character::getStats() {
 	return this->stats;
+}
+
+bool Character::isAlive() {
+	if (this->stats.HP <= 0)
+		return 0;
+	else
+		return 1;
 }
 
 void Player::Jump() {

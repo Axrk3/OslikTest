@@ -74,7 +74,7 @@ public:
 public:
 	void fight();
 	characteristics getStats();
-	
+	bool isAlive();
 };
 
 class Friend : public Character {
