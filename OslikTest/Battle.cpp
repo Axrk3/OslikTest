@@ -42,34 +42,30 @@ int Battle::battleEnd(RenderWindow &window) {
 }
 
 void Battle::menuInitialization() {
-	Vector2f menuSize;
-	menuSize.x = resolution.x / 2;
-	menuSize.y = resolution.y / 4;
-	menu.setFillColor(Color(100, 50, 0, 255));
-	menu.setSize(menuSize);
-	menu.setPosition(resolution.x / 4, 3 * resolution.y / 4);
+	menuTexture.loadFromFile("menu.png");
+	menuSprite.setTexture(menuTexture);
+	menuSprite.setPosition(resolution.x / 4, 3 * resolution.y / 4);
 
-	Vector2f barsSize;
-	barsSize.x = resolution.x / 8;
-	barsSize.y = resolution.y / 24;
+	barSize.x = 219;
+	barSize.y = 91;
 	menuBar = new RectangleShape[4];
 	for (int i = 0; i < 4; i++) {
-		menuBar[i].setFillColor(Color(125, 65, 0, 255));
-		menuBar[i].setSize(barsSize);
+		menuBar[i].setFillColor(Color::Transparent);
+		menuBar[i].setSize(barSize);
 
 		switch (i)
 		{
 		case 0:
-			menuBar[i].setPosition(5 * resolution.x / 16, 19 * resolution.y / 24);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 64, menuSprite.getPosition().y + 36);
 			break;
 		case 1:
-			menuBar[i].setPosition(9 * resolution.x / 16, 19 * resolution.y / 24);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 412, menuSprite.getPosition().y + 36);
 			break;
 		case 2:
-			menuBar[i].setPosition(5 * resolution.x / 16, 22 * resolution.y / 24);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 64, menuSprite.getPosition().y + 140);
 			break;
 		case 3:
-			menuBar[i].setPosition(9 * resolution.x / 16, 22 * resolution.y / 24);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 412, menuSprite.getPosition().y + 140);
 			break;
 		default:
 			break;
@@ -77,43 +73,13 @@ void Battle::menuInitialization() {
 	}
 }
 
-void Battle::textInitialization() {
-	font.loadFromFile("times.ttf");
-	text = new Text[4];
-	for (int i = 0; i < 4; i++) {
-		text[i].setFont(font);
-		text[i].setCharacterSize(16);
-		text[i].setFillColor(Color::Black);
-		switch (i) {
-		case 0:
-			text[i].setString("Attack");
-			text[i].setPosition(8 * resolution.x / 24, 19 * resolution.y / 24);
-			break;
-		case 1:
-			text[i].setString("Block");
-			text[i].setPosition(14 * resolution.x / 24, 19 * resolution.y / 24);
-			break;
-		case 2:
-			text[i].setString("Inventory");
-			text[i].setPosition(8 * resolution.x / 24, 22 * resolution.y / 24);
-			break;
-		case 3:
-			text[i].setString("Exit");
-			text[i].setPosition(14 * resolution.x / 24, 22 * resolution.y / 24);
-			break;
-		}
-	}
-}
-
 void Battle::cursorInitialization() {
-	Vector2f cursorSize;
-	cursorSize.x = resolution.y / 24;
-	cursorSize.y = resolution.y / 24;
-	cursor.setFillColor(Color::Red);
-	cursor.setSize(cursorSize);
-	currentPosition.x = 7 * resolution.x / 24;
-	currentPosition.y = 19 * resolution.y / 24;
-	action = 1;
+	cursorTexture.loadFromFile("cursor.png");
+	cursorSprite.setTexture(cursorTexture);
+
+	action.x = 0;
+	action.y = 0;
+	currentPosition = menuBar[(action.x + action.y)].getPosition();
 }
 
 void Battle::unitInitialization() {
@@ -151,43 +117,37 @@ void Battle::drawElements(RenderWindow &window) {
 	window.draw(hpBar);
 	window.draw(outlineHP);
 
-	window.draw(menu);
-	for (int i = 0; i < 4; i++) {
-		window.draw(menuBar[i]);
-		window.draw(text[i]);
-	}
-
-	window.draw(cursor);
+	window.draw(menuSprite);
+	window.draw(cursorSprite);
 }
 
 void Battle::input() {
 	if (Keyboard::isKeyPressed(Keyboard::Up)) {
-		if (currentPosition.y > 19 * resolution.y / 24) {
-			currentPosition.y -= 3 * resolution.y / 24;
-			action -= 2;
+		if (action.y == 1) {
+			action.y--;
 		}
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::Down)) {
-		if (currentPosition.y < 22 * resolution.y / 24) {
-			currentPosition.y += 3 * resolution.y / 24;
-			action += 2;
-		}	
+		if (action.y == 0) {
+			action.y++;
+		}
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::Left)) {
-		if (currentPosition.x > 7 * resolution.x / 24) {
-			currentPosition.x -= 6 * resolution.x / 24;
-			action--;
-		}	
+		if (action.x == 1) {
+			action.x--;
+		}
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::Right)) {
-		if (currentPosition.x < 13 * resolution.x / 24) {
-			currentPosition.x += 6 * resolution.x / 24;
-			action++;
+		if (action.x == 0) {
+			action.x++;
 		}
 	}
+
+	currentPosition.x = menuBar[(action.x + 2 * action.y)].getPosition().x + barSize.x;
+	currentPosition.y = menuBar[(action.x + 2 * action.y)].getPosition().y;
 }
 
 void Battle::defenceUp(Character &defender) {
@@ -198,20 +158,20 @@ void Battle::defenceDown(Character &defender) {
 	defender.stats.DEF -= 10;
 }
 
-void Battle::attack(Character &attacker, Character &defender, int speed, RenderWindow &window) {
+void Battle::attack(Character &attacker, Character &defender, int speedX, int speedY, RenderWindow &window) {
 	Vector2f offset;
-	offset.x = speed * 0.05;
-	offset.y = 0;
+	offset.x = speedX * 0.05;
+	offset.y = speedY * 0.1;
 	int step = 0;
 
 	while (attacker.sprite.getPosition().x != defender.sprite.getPosition().x) {
 		attacker.sprite.move(offset);
 
 		step++;
-
 		drawElements(window);
 		window.display();
 	}
+	std::cout << step;
 
 	defender.stats.HP -= attacker.stats.ATK / defender.stats.DEF;
 	if (!defender.isAlive())
@@ -233,32 +193,28 @@ int Battle::chooseEnemy(RenderWindow &window) {
 			choice = i;
 			break;
 		}
-	cursor.setPosition(enemy[choice].sprite.getPosition());
 
 	do {
 		if (Keyboard::isKeyPressed(Keyboard::Up)) {
 			if (choice != 0) {
-				choice--;
-				if (enemy[choice].isAlive())
-					cursor.setPosition(enemy[choice].sprite.getPosition());
+				choice--;	
 			}
-
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Down)) {
 			if (choice != enemyAmount - 1) {
 				choice++;
-				if (enemy[choice].isAlive())
-					cursor.setPosition(enemy[choice].sprite.getPosition());
 			}
 		}
+
+		if (enemy[choice].isAlive())
+			cursorSprite.setPosition(enemy[choice].sprite.getPosition().x + enemy[choice].texture.getSize().x, enemy[choice].sprite.getPosition().y);
 
 		drawElements(window);
 		window.display();
 		sleep(seconds(0.1f));
 	} while (!Keyboard::isKeyPressed(Keyboard::Enter));
 		
-
 	return choice;
 }
 
@@ -266,21 +222,21 @@ void Battle::actionProcessing(RenderWindow &window) {
 	int choice;
 
 	if (Keyboard::isKeyPressed(Keyboard::Enter)) {
-		switch (action) {
-		case 1:
+		switch (action.x + 2 * action.y) {
+		case 0:
 			choice = chooseEnemy(window);
-			attack(player, enemy[choice], 20, window);
+			attack(player, enemy[choice], 20, (choice == 1) ? 0 : choice ? 1 : -1, window);
 			isAction = true;
 			break;
-		case 2:
+		case 1:
 			defenceUp(player);
 			isAction = true;
 			isBlocked = true;
 			break;
-		case 3:
+		case 2:
 			
 			break;
-		case 4:
+		case 3:
 			exit(0);
 			break;
 		}
@@ -291,7 +247,6 @@ void Battle::battleStart(RenderWindow &window) {
 	
 	unitInitialization();
 	menuInitialization();
-	textInitialization();
 	cursorInitialization();
 
 	while (true) {
@@ -299,17 +254,17 @@ void Battle::battleStart(RenderWindow &window) {
 
 		drawElements(window);
 
-		cursor.setPosition(currentPosition);
+		cursorSprite.setPosition(currentPosition);
 
 		input();
 		actionProcessing(window);
 
-		cursor.setPosition(currentPosition);
+		cursorSprite.setPosition(currentPosition);
 
 		if (isAction) {
 			for (int i = 0; i < enemyAmount; i++) {
 				if (enemy[i].isAlive())
-					attack(enemy[i], player, -20, window);
+					attack(enemy[i], player, -20, (i == 1) ? 0 : i ? -1 : 1, window);
 			}
 			isAction = false;
 		}

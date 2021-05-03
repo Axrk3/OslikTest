@@ -72,7 +72,6 @@ public:
 			//initiative;
 	} stats;
 public:
-	void fight();
 	characteristics getStats();
 	bool isAlive();
 };

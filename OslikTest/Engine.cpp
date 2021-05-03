@@ -102,6 +102,7 @@ void Engine::collision(int dir) {
 					lvl.changeBlock(i, j);
 					lvl.changeBlock(i, j - 1);
 				}
+				
 				//player.inventory.addItem(player.inventory.consum[0], "potion");
 				regularText.setString("You got item!!");
 				regularText.setCharacterSize(32);
