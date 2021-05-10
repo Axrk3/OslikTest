@@ -171,9 +171,9 @@ void Battle::attack(Character &attacker, Character &defender, int speedX, int sp
 		drawElements(window);
 		window.display();
 	}
-	std::cout << step;
-
-	defender.stats.HP -= attacker.stats.ATK / defender.stats.DEF;
+	
+	if (attacker.stats.ATK > defender.stats.DEF)
+		defender.stats.HP -= attacker.stats.ATK - defender.stats.DEF;
 	if (!defender.isAlive())
 		deadEnemy++;
 
@@ -266,14 +266,15 @@ void Battle::battleStart(RenderWindow &window) {
 				if (enemy[i].isAlive())
 					attack(enemy[i], player, -20, (i == 1) ? 0 : i ? -1 : 1, window);
 			}
+
+			if (isBlocked) {
+				defenceDown(player);
+				isBlocked = false;
+			}
+
 			isAction = false;
 		}
 			
-		if (isBlocked) {
-			defenceDown(player);
-			isAction = false;
-			isBlocked = false;
-		}
 		window.display();
 
 		switch (battleEnd(window))

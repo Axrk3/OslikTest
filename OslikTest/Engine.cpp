@@ -153,10 +153,13 @@ void Engine::drawInventory() {
 	}
 	
 	Vector2f size;
-	size.x = 13 * player.stats.ATK - 2;
 	size.y = 25;
+	size.x = 5.08 * player.stats.ATK;
 	player.inventory.attackRect.setSize(size);
-	window.draw(player.inventory.attackRect);
+	size.x = 6.35 * player.stats.DEF;
+	player.inventory.defenceRect.setSize(size);
+	window.draw(player.inventory.attackRect); 
+	window.draw(player.inventory.defenceRect);
 }
 
 void Engine::draw() {

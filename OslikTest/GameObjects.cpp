@@ -3,7 +3,7 @@
 
 Player::Player() {
 	stats.HP = 85;
-	stats.ATK = 10;
+	stats.ATK = 20;
 	stats.DEF = 2;
 	ground = 800;
 	texture.loadFromFile("bob.png");
@@ -15,7 +15,7 @@ Player::Player() {
 
 Enemy::Enemy() {
 	stats.HP = 20;
-	stats.ATK = 10;
+	stats.ATK = 1;
 	stats.DEF = 1;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -75,8 +75,10 @@ Inventory::Inventory() {
 	sprite.setPosition(480, 270);
 
 	
-	attackRect.setPosition(1248, 328);
+	attackRect.setPosition(sprite.getPosition().x + 768, sprite.getPosition().y + 58);
 	attackRect.setFillColor(Color::Red);
+	defenceRect.setPosition(sprite.getPosition().x + 768, sprite.getPosition().y + 106);
+	defenceRect.setFillColor(Color::Blue);
 
 	items[0].rect.left = 540;
 	items[0].rect.top = 320;

@@ -25,7 +25,6 @@ private:
 	void drawMap(String map[]);
 	void drawInventory();
 	void collision(int dir);
-	Mutex mutex;
 	Player player;
 	Level lvl;
 	RectangleShape rect;
