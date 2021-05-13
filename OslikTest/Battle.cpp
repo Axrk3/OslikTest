@@ -78,11 +78,11 @@ void Battle::menuInitialization() {
 
 	Vector2f hpBarSize;
 	hpBarSize.x = 199;
-	hpBarSize.y = 36;
+	hpBarSize.y = 44;
 	
 	modifier = hpBarSize.x / player.stats.HP;
 
-	outlineHP.setPosition(menuSprite.getPosition().x + 698, menuSprite.getPosition().y + 62);
+	outlineHP.setPosition(menuSprite.getPosition().x + 698, menuSprite.getPosition().y + 61);
 	outlineHP.setSize(hpBarSize);
 	outlineHP.setFillColor(Color(63, 122, 104, 255));
 	outlineHP.setOutlineColor(Color(36, 72, 61, 255));
