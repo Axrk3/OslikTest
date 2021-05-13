@@ -5,6 +5,7 @@ class Battle {
 	Player player;
 	Enemy *enemy;
 	int enemyAmount, deadEnemy, playerAmount = 1;
+	double modifier;
 
 	Vector2f resolution, currentPosition, barSize;
 	Vector2i action;

@@ -9,6 +9,10 @@ Battle::Battle(Player &_player, Enemy *&_enemy, int _enemyAmount) {
 
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
+
+	unitInitialization();
+	menuInitialization();
+	cursorInitialization();
 }
 
 int Battle::battleEnd(RenderWindow &window) {
@@ -56,21 +60,37 @@ void Battle::menuInitialization() {
 		switch (i)
 		{
 		case 0:
-			menuBar[i].setPosition(menuSprite.getPosition().x + 64, menuSprite.getPosition().y + 36);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 62, menuSprite.getPosition().y + 37);
 			break;
 		case 1:
-			menuBar[i].setPosition(menuSprite.getPosition().x + 412, menuSprite.getPosition().y + 36);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 380, menuSprite.getPosition().y + 37);
 			break;
 		case 2:
-			menuBar[i].setPosition(menuSprite.getPosition().x + 64, menuSprite.getPosition().y + 140);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 62, menuSprite.getPosition().y + 139);
 			break;
 		case 3:
-			menuBar[i].setPosition(menuSprite.getPosition().x + 412, menuSprite.getPosition().y + 140);
+			menuBar[i].setPosition(menuSprite.getPosition().x + 380, menuSprite.getPosition().y + 139);
 			break;
 		default:
 			break;
 		}
 	}
+
+	Vector2f hpBarSize;
+	hpBarSize.x = 199;
+	hpBarSize.y = 36;
+	
+	modifier = hpBarSize.x / player.stats.HP;
+
+	outlineHP.setPosition(menuSprite.getPosition().x + 698, menuSprite.getPosition().y + 62);
+	outlineHP.setSize(hpBarSize);
+	outlineHP.setFillColor(Color(63, 122, 104, 255));
+	outlineHP.setOutlineColor(Color(36, 72, 61, 255));
+	outlineHP.setOutlineThickness(4);
+	
+	hpBar.setPosition(outlineHP.getPosition());
+	hpBar.setSize(hpBarSize);
+	hpBar.setFillColor(Color(220, 20, 60, 255));
 }
 
 void Battle::cursorInitialization() {
@@ -86,19 +106,6 @@ void Battle::unitInitialization() {
 	player.sprite.setPosition(resolution.x / 8, resolution.y / 4);
 	for (int i = 0; i < enemyAmount; i++)
 		enemy[i].sprite.setPosition((i + 5) * resolution.x / 8, (i + 1) * resolution.y / 8);
-
-	Vector2f outlineHPSize;
-	outlineHPSize.y = resolution.y / 64;
-
-	hpBar.setFillColor(Color::Red);
-	outlineHP.setOutlineThickness(1);
-	outlineHP.setOutlineColor(Color::Black);
-	outlineHP.setFillColor(Color::Transparent);
-	
-	hpBar.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - resolution.y / 16);
-	outlineHP.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y - resolution.y / 16);
-	outlineHPSize.x = player.stats.HP;
-	outlineHP.setSize(outlineHPSize);
 }
 
 void Battle::drawElements(RenderWindow &window) {
@@ -110,15 +117,15 @@ void Battle::drawElements(RenderWindow &window) {
 			window.draw(enemy[i].getSprite());
 
 	Vector2f hpBarSize;
-	hpBarSize.y = resolution.y / 64;
-	hpBarSize.x = player.stats.HP;
-	hpBar.setSize(hpBarSize);
+	hpBarSize.x = player.stats.HP * modifier;
+	hpBarSize.y = hpBar.getSize().y;
 
-	window.draw(hpBar);
-	window.draw(outlineHP);
+	hpBar.setSize(hpBarSize);
 
 	window.draw(menuSprite);
 	window.draw(cursorSprite);
+	window.draw(outlineHP);
+	window.draw(hpBar);
 }
 
 void Battle::input() {
@@ -151,11 +158,11 @@ void Battle::input() {
 }
 
 void Battle::defenceUp(Character &defender) {
-	defender.stats.DEF += 10;
+	defender.stats.DEF *= 2;
 }
 
 void Battle::defenceDown(Character &defender) {
-	defender.stats.DEF -= 10;
+	defender.stats.DEF /= 2;
 }
 
 void Battle::attack(Character &attacker, Character &defender, int speedX, int speedY, RenderWindow &window) {
@@ -166,16 +173,19 @@ void Battle::attack(Character &attacker, Character &defender, int speedX, int sp
 
 	while (attacker.sprite.getPosition().x != defender.sprite.getPosition().x) {
 		attacker.sprite.move(offset);
-
 		step++;
+
 		drawElements(window);
 		window.display();
 	}
 	
 	if (attacker.stats.ATK > defender.stats.DEF)
-		defender.stats.HP -= attacker.stats.ATK - defender.stats.DEF;
-	if (!defender.isAlive())
+		defender.stats.HP -= (attacker.stats.ATK - defender.stats.DEF);
+
+	if (!defender.isAlive()) {
+		defender.stats.HP = 0;
 		deadEnemy++;
+	}
 
 	while (step) {
 		attacker.sprite.move(-offset);
@@ -244,11 +254,6 @@ void Battle::actionProcessing(RenderWindow &window) {
 }
 
 void Battle::battleStart(RenderWindow &window) {
-	
-	unitInitialization();
-	menuInitialization();
-	cursorInitialization();
-
 	while (true) {
 		sleep(seconds(0.1f));
 

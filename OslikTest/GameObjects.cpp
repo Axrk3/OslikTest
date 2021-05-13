@@ -3,8 +3,8 @@
 
 Player::Player() {
 	stats.HP = 85;
-	stats.ATK = 20;
-	stats.DEF = 2;
+	stats.ATK = 14;
+	stats.DEF = 4;
 	ground = 800;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
@@ -15,8 +15,8 @@ Player::Player() {
 
 Enemy::Enemy() {
 	stats.HP = 20;
-	stats.ATK = 1;
-	stats.DEF = 1;
+	stats.ATK = 10;
+	stats.DEF = 3;
 	texture.loadFromFile("bob.png");
 	sprite.setTexture(texture);
 	sprite.setColor(Color::Red);
